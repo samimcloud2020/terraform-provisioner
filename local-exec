@@ -1,4 +1,8 @@
+The local-exec provisioner works on the Terraform host – where Terraform configuration is applied/executed. It is used to execute any shell command. 
+It is used to set or read environment variables, details about the resource which is created, invoke any process or application, etc.
 
+If we ship any shell script along with the Terraform config, or if the shell scripts are already available on the host to be invoked,
+then local-exec provisioners are used to execute the same.
 -------------------------------------------------------------------------------------------
 resource "aws_instance" "web" {
   # ...
