@@ -1,0 +1,28 @@
+-----------------When to Run the Provisioners?---------------------------------------------
+It is possible to specify when the provisioners should run. Terraform mainly performs two operations – apply and destroy. 
+If we want to run the provisioner to handle some logic at creation time, then we use the creation-time provisioner. 
+Similarly, if we want to handle the destroy-time scenario differently, we use the destroy-time provisioners.
+
+The “when” attribute used in the provisioner block determines whether a provisioner is creation-time or destroy-time.
+By default, if the “when” attribute is not specified, the provisioner runs at creation time. In the example below,
+we create separate text files that contain event-specific messages for both create and destroy events.
+
+
+
+resource "aws_instance" "my_vm" {
+ ami           = var.ami //Amazon Linux AMI
+ instance_type = var.instance_type
+ 
+ provisioner "local-exec" {
+   command = "echo 'Creation is successful.' >> creation.txt"
+ }
+ 
+ provisioner "local-exec" {
+   when = destroy
+   command = "echo 'Destruction is successful.' >> destruction.txt"
+ }
+ 
+ tags = {
+   Name = var.name_tag,
+ }
+}
