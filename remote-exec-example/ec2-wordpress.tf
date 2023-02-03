@@ -34,15 +34,13 @@ depends_on = [
   # Code for installing the softwares!
   provisioner "remote-exec" {
     inline = [
-      "sudo yum update -y",
-      "sudo yum install php php-mysqlnd httpd -y",
-      "wget https://wordpress.org/wordpress-4.8.14.tar.gz",
-      "tar -xzf wordpress-4.8.14.tar.gz",
-      "sudo cp -r wordpress /var/www/html/",
-      "sudo chown -R apache.apache /var/www/html/",
-      "sudo systemctl start httpd",
-      "sudo systemctl enable httpd",
-      "sudo systemctl restart httpd"
+     apt update -y,
+     apt install docker.io -y,
+     docker pull jenkins/jenkins,
+     docker ps,
+     docker run -p 8080:8080 --name=jenkins-master -d jenkins/jenkins,
+     docker logs jenkins-master
+
     ]
   }
 }
