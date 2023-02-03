@@ -15,7 +15,7 @@ depends_on = [
   key_name = "samim"
 
   # Security groups to use!
-  vpc_security_group_ids =  ["${aws_security_group.websg.id}"]
+  security_groups =  ["aws_security_group.websg.id"]
 
   tags = {
     Name = "Webserver_From_Terraform"
