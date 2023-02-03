@@ -15,7 +15,7 @@ depends_on = [
   key_name = "samim"
 
   # Security groups to use!
-  security_groups =  ["aws_security_group.websg.id"]
+  security_groups =  [ "aws_security_group.websg.id" ]
 
   tags = {
     Name = "Webserver_From_Terraform"
@@ -34,12 +34,12 @@ depends_on = [
   # Code for installing the softwares!
   provisioner "remote-exec" {
     inline = [
-     apt update -y,
-     apt install docker.io -y,
-     docker pull jenkins/jenkins,
-     docker ps,
-     docker run -p 8080:8080 --name=jenkins-master -d jenkins/jenkins,
-     docker logs jenkins-master
+       "apt update -y",
+       "apt install docker.io -y",
+       "docker pull jenkins/jenkins",
+       "docker ps",
+       "docker run -p 8080:8080 --name=jenkins-master -d jenkins/jenkins",
+       "docker logs jenkins-master"
 
     ]
   }
