@@ -21,7 +21,7 @@ depends_on = [
     timeout     = "1m"
     agent       = false
    }
-    depends_on = [ aws_instance.webserver ]
+    
   provisioner "remote-exec" {
     inline = [
       "sudo apt update -y",
