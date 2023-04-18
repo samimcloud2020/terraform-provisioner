@@ -2,7 +2,7 @@ resource "aws_instance" "webserver" {
 depends_on = [
     aws_security_group.websg
   ]
-  ami           = "ami-00874d747dde814fa"
+  ami           = "ami-007855ac798b5175e"
   instance_type = "t2.micro"
   subnet_id     = "subnet-062ac4058a80adee1"
   associate_public_ip_address = "true"
