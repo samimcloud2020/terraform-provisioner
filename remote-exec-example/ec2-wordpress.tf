@@ -20,7 +20,8 @@ depends_on = [
     private_key = file("samim.pem")
     timeout     = "1m"
     agent       = false
- 
+   }
+    depends_on = [ aws_instance.webserver ]
   provisioner "remote-exec" {
     inline = [
       "sudo apt update -y",
@@ -36,6 +37,6 @@ depends_on = [
     ]
   }
 }
-}
+
 
   
