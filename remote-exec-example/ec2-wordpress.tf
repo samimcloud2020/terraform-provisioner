@@ -7,7 +7,7 @@ depends_on = [
   subnet_id     = "subnet-062ac4058a80adee1"
   associate_public_ip_address = "true"
   key_name = "samim"
-  security_groups =  [ "aws_security_group.websg.id" ]
+  security_groups =  [ "${aws_security_group.websg.id}" ]
   tags = {
     Name = "Webserver_From_Terraform"
   }
