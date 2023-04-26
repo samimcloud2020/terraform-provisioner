@@ -1,0 +1,2 @@
+The "count" and "for_each" meta-arguments are mutually-exclusive, only one should be used to be
+│ explicit about the number of resources to be created.
