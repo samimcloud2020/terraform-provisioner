@@ -42,3 +42,35 @@ precondition — check some thing before performing the action on the resource
 postcondition — validate some thing after performing an action on the resource
 
 --------------------------------------------------------
+
+
+resource "aws_instance" "web1" {
+  ami             = "ami-016eb5d644c333ccb" 
+  instance_type   = "t2.micro"
+  key_name        = file(bsnl.pem)
+  subnet_id       = aws_subnet.public_subnet.id
+  security_groups = [aws_security_group.sg.id]
+   lifecycle {
+    replace_triggered_by = [
+      aws_instance.web1
+    ]
+  } 
+  user_data = <<-EOF
+  #!/bin/bash
+  echo "*** Installing httpd"
+  sudo apt update -y
+  sudo apt install httpd -y
+  echo "<h1>welcome httpd changed <\h1>" > /var/www/html/index.html
+  sudo systemctl restart httpd
+  echo "*** Completed Installing httpd"
+  EOF
+
+  tags = {
+    Name = "web_instance"
+  }
+
+  volume_tags = {
+    Name = "web_instance"
+  } 
+}
+
