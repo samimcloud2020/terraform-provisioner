@@ -16,3 +16,8 @@ to apply, note that this setting does not prevent the remote object from being d
 if the resource block were removed from configuration entirely: 
 in that case, the prevent_destroy setting is removed along with it, 
 and so Terraform will allow the destroy operation to succeed.
+
+
+To prevent destroy operations for specific resources,
+you can add the prevent_destroy attribute to your resource definition. 
+This lifecycle option prevents Terraform from accidentally removing critical resources.
