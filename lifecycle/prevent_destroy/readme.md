@@ -21,3 +21,18 @@ and so Terraform will allow the destroy operation to succeed.
 To prevent destroy operations for specific resources,
 you can add the prevent_destroy attribute to your resource definition. 
 This lifecycle option prevents Terraform from accidentally removing critical resources.
+
+C:\1>terraform destroy  -auto-approve
+data.aws_ami.ubuntu: Reading...
+data.aws_ami.ubuntu: Read complete after 1s [id=ami-0aa2b7722dc1b5612]
+aws_instance.web1: Refreshing state... [id=i-0d80c06f036328af6]
+╷
+│ Error: Instance cannot be destroyed
+│
+│   on ec2.tf line 18:
+│   18: resource "aws_instance" "web1" {
+│
+│ Resource aws_instance.web1 has lifecycle.prevent_destroy set, but the plan calls for this        
+│ resource to be destroyed. To avoid this error and continue with the plan, either disable
+│ lifecycle.prevent_destroy or reduce the scope of the plan using the -target flag.
+╵
