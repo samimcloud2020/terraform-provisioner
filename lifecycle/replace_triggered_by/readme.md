@@ -16,3 +16,11 @@ a plan to update or replace that instance will trigger replacement.
 
 If the reference is to a single attribute of a resource instance,
 any change to the attribute value will trigger replacement.
+
+
+----------------------------------------------------------
+You probably wonder why you need this – and you’re right in doing so. 
+Typically, Terraforms default dependency management works flawlessly.
+Sometimes, however, you might want to replace your VM, 
+because even though you can update the start up script without replacement,
+you want a new instance for your own sanity. 
