@@ -24,3 +24,21 @@ Typically, Terraforms default dependency management works flawlessly.
 Sometimes, however, you might want to replace your VM, 
 because even though you can update the start up script without replacement,
 you want a new instance for your own sanity. 
+
+----------------------------------------------------------------------
+What can we control?
+As I have said above we can control - to some extent -
+the lifecycle further than the three above stages for our resources. 
+Terraform gives us the following options that we can use in the lifecycle meta-argument:
+
+create_before_destroy — when an in-place update has to occur Terraform will create the new instance prior to destroying the old
+
+prevent_destroy — do not allow the destroy flow to actually destruct the resource
+
+ignore_changes — ignore any changes on specified fields or an entire object
+
+replace_triggered_by
+precondition — check some thing before performing the action on the resource
+postcondition — validate some thing after performing an action on the resource
+
+--------------------------------------------------------
