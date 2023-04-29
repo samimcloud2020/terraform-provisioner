@@ -12,7 +12,7 @@ resource "aws_instance" "web1" {
   echo "*** Installing apache2"
   sudo apt update -y
   sudo apt install apache2 -y
-  echo "<h1>welcome apache2 web1 change <\h1>" > /var/www/html/index.html  #as soon as change user_data in web1 , its triggered web2 to change/replacement
+  echo "<h1>welcome apache2 web1 change <\h1>" > /var/www/html/index.html  #as soon as change user_data in web1 , its triggered web2 for change replacement
   sudo systemctl restart apache2
   echo "*** Completed Installing apache"
   EOF
@@ -59,4 +59,6 @@ resource "aws_instance" "web2" {
   } 
 }
 
-
+---------------------------------------
+  when web1 user_data  change , its triggered web2 to replace/update.
+  so web1 and web2 destroy and recreate.
