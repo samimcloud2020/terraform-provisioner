@@ -1,72 +1,64 @@
-data "aws_ami" "ubuntu" {
-  most_recent = true
+# Create a VPC
+resource "aws_vpc" "app_vpc" {
+  cidr_block = "192.168.0.0/16"
 
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"] # Canonical
-}
-
-
-resource "aws_instance" "web1" {
-  
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = var.instance_type["us-east-1a"]
-  availability_zone = var.az["az2"]
-  
-  root_block_device {
-  volume_size = "${lookup(var.storage_sizes, var.plans["5USD"])}"
-   }
-  provisioner "local-exec" {
-   command = "echo ${self.private_ip} >> private_ip1.txt"
- }
-
- 
-  provisioner "local-exec" {
-    when    = destroy
-    command = "echo 'Destroy-time provisioner'"
-    on_failure = continue
-  }
-
-   lifecycle {
-    ignore_changes = all # list of valus [ ], ignore all parameters which is changing any attribute
-  }
   tags = {
-    Name = "HelloWorld"
+    Name = "app-vpc"
   }
 }
 
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.app_vpc.id
 
+  tags = {
+    Name = "vpc_igw"
+  }
+}
 
+resource "aws_subnet" "public_subnet" {
+  vpc_id            = aws_vpc.app_vpc.id
+  cidr_block        = "192.168.1.0/24"
+  map_public_ip_on_launch = true
+  availability_zone = "us-east-1a"
 
+  tags = {
+    Name = "public-subnet"
+  }
+}
 
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.app_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+
+  tags = {
+    Name = "public_rt"
+  }
+}
+
+resource "aws_route_table_association" "public_rt_asso" {
+  subnet_id      = aws_subnet.public_subnet.id
+  route_table_id = aws_route_table.public_rt.id
+}
 
 resource "aws_instance" "web1" {
-  ami             = "ami-016eb5d644c333ccb" 
+  ami             = "ami-007855ac798b5175e" 
   instance_type   = "t2.micro"
-  key_name        = file(bsnl.pem)
+  key_name        = "bsnl"
   subnet_id       = aws_subnet.public_subnet.id
   security_groups = [aws_security_group.sg.id]
-   lifecycle {
-    replace_triggered_by = [
-      aws_instance.web1
-    ]
-  } 
+   
   user_data = <<-EOF
   #!/bin/bash
-  echo "*** Installing httpd"
+  echo "*** Installing apache2"
   sudo apt update -y
-  sudo apt install httpd -y
-  echo "<h1>welcome httpd changed <\h1>" > /var/www/html/index.html
-  sudo systemctl restart httpd
-  echo "*** Completed Installing httpd"
+  sudo apt install apache2 -y
+  echo "<h1>welcome apache2  <\h1>" > /var/www/html/index.html
+  sudo systemctl restart apache2
+  echo "*** Completed Installing apache"
   EOF
 
   tags = {
@@ -77,3 +69,42 @@ resource "aws_instance" "web1" {
     Name = "web_instance"
   } 
 }
+
+
+resource "aws_security_group" "sg" {
+  name        = "allow_ssh_http"
+  description = "Allow ssh http inbound traffic"
+  vpc_id      = aws_vpc.app_vpc.id
+
+  ingress {
+    description      = "SSH from VPC"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    description      = "HTTP from VPC"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "allow_ssh_http"
+  }
+}
+
+
